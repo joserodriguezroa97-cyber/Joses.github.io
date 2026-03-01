@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Mensajes Locales</title>
+</head>
+<body>
+<h2>Mensajes locales (sin base de datos)</h2>
+
+Nombre: <input id="nick" value="Usuario"><br><br>
+<textarea id="text" placeholder="Escribe un mensaje"></textarea><br><br>
+<button onclick="send()">Enviar</button>
+<button onclick="clearAll()">Borrar todo</button>
+
+<h3>Mensajes:</h3>
+<div id="messages"></div>
+
+<script>
+const KEY = "mensajes_locales";
+
+function load(){
+  return JSON.parse(localStorage.getItem(KEY) || "[]");
+}
+
+function save(arr){
+  localStorage.setItem(KEY, JSON.stringify(arr));
+}
+
+function render(){
+  const msgs = load();
+  const div = document.getElementById("messages");
+  div.innerHTML = "";
+  msgs.forEach(m=>{
+    div.innerHTML += "<p><b>"+m.nick+"</b>: "+m.text+"</p>";
+  });
+}
+
+function send(){
+  const nick = document.getElementById("nick").value;
+  const text = document.getElementById("text").value;
+  if(text=="") return alert("Escribe un mensaje");
+  const msgs = load();
+  msgs.push({nick:nick, text:text});
+  save(msgs);
+  document.getElementById("text").value="";
+  render();
+}
+
+function clearAll(){
+  localStorage.removeItem(KEY);
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
